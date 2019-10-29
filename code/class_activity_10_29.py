@@ -8,6 +8,7 @@ import os
 import glob
 import re
 import nltk
+from sklearn.metrics import jaccard_score
 path = '../summarization_dataset_duc_2004/test_docs'
 gspath = '../summarization_dataset_duc_2004/gold_summaries'
 
@@ -168,9 +169,24 @@ print(text)
 sent=get_sentence(text)
 print(sent)
 
+
 # In[12]:
 
 
 #compare the similarity between your summary with each human-annotator's summary and return an average
-#use jaccards simialrity 
+#use jaccards simialrity
 
+# my_summary: a string, result returned by get_sentence
+# gold_summary: a string, corresponding gold summary sentence
+def similarity_score(my_summary, gold_summary):
+    return jaccard_score(gold_summary.split(), my_summary.split())
+
+
+# my summaries: a list of strings, where each string is a summary sentence returned by get_sentence
+# gold_summaries: a list of strings, where each string is a gold summary sentence
+def evaluate_model(my_summaries, gold_summaries):
+    accum_jaccard = 0
+    num_of_doc = len(my_summaries)
+    for i in range(num_of_doc):
+        accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i])
+    return accum_jaccard/num_of_doc
