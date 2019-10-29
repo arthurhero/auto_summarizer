@@ -91,6 +91,7 @@ print(standard_summaries_file_0)
 
 # In[9]:
 
+summaries=list()
 
 #read human summaries
 for f in standard_summaries_file_0:
@@ -106,6 +107,7 @@ for f in standard_summaries_file_0:
         only_summary = re.sub('\<.+?\>', '', only_summary)
         only_summary = only_summary[3:]
         print(only_summary)
+        summaries.append(only_summary)
 
 
 
@@ -172,14 +174,40 @@ print(sent)
 
 # In[12]:
 
+def clean(text):
+    words=list()
+    token=nltk.word_tokenize(text)
+    for t in token:
+        if t.isalpha() and len(t)>1:
+            w=t.lower()
+            words.append(w)
+    return words
+
+def intersection(lst1, lst2):
+    lst3 = [value for value in lst1 if value in lst2]
+    return lst3
 
 #compare the similarity between your summary with each human-annotator's summary and return an average
 #use jaccards simialrity
 
 # my_summary: a string, result returned by get_sentence
 # gold_summary: a string, corresponding gold summary sentence
-def similarity_score(my_summary, gold_summary):
-    return jaccard_score(gold_summary.split(), my_summary.split())
+def similarity_score(my_summary, gold_summaries):
+    scores=list()
+    for gs in gold_summaries:
+        gs=clean(gs)
+        my=clean(my_summary)
+        inter=intersection(gs,my)
+        al=gs
+        al.extend(my)
+        gs=set(gs)
+        my=set(my)
+        al=set(al)
+        inter=set(inter)
+        scores.append(len(inter)/len(al))
+    ss=sum(scores)
+    ss/=len(scores)
+    return ss
 
 
 # my summaries: a list of strings, where each string is a summary sentence returned by get_sentence
@@ -190,3 +218,9 @@ def evaluate_model(my_summaries, gold_summaries):
     for i in range(num_of_doc):
         accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i])
     return accum_jaccard/num_of_doc
+
+
+print(summaries)
+score=similarity_score(sent, summaries)
+print(score)
+
