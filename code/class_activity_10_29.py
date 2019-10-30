@@ -125,7 +125,7 @@ for f in standard_summaries_file_0:
 # for each sentence:
 #  calculate a score by adding the normalized tf-score of the words present in the document
 # for each sentence divide the total sentence score by the number of words (normalize as longer sentences might get more scores)
-#return the highest ranked sentence as an extractive summary
+# return the highest ranked sentence as an extractive summary
 
 
 
