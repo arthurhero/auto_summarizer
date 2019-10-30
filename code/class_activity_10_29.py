@@ -134,17 +134,25 @@ def similarity_score(my_summary, gold_summary):
 # gold_summaries: a list of strings, where each string is a gold summary sentence
 def evaluate_model(my_summaries, gold_summaries):
     accum_jaccard = 0
-    num_of_doc = len(my_summaries)
-    num_of_summary = len(gold_summaries)
-    for i in range(num_of_doc):
-        accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i])
-    for i in range(num_of_doc):
-        accum_jaccard += similarity_score(my_summaries[i], gold_summaries[num_of_doc+i])
-    for i in range(num_of_doc):
-        accum_jaccard += similarity_score(my_summaries[i], gold_summaries[2*num_of_doc+i])
-    for i in range(num_of_doc):
-        accum_jaccard += similarity_score(my_summaries[i], gold_summaries[3*num_of_doc+i])
-    return accum_jaccard/num_of_summary
+    num_doc = len(my_summaries)
+    num_gold_summaries = len(gold_summaries)
+    for i in range(num_doc):
+        if i < 10:
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 10])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 20])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 30])
+        elif i < 20:
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 30])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 40])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 50])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 60])
+        else:
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 60])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 70])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 80])
+            accum_jaccard += similarity_score(my_summaries[i], gold_summaries[i + 90])
+    return accum_jaccard/num_gold_summaries
 
 docs = read_files(path)
 gold_summaries = read_files(gspath)
